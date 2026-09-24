@@ -1,6 +1,6 @@
 package Controller;
 
-import Service.Service;
+import Service.CurrencyService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,7 +12,7 @@ import java.io.IOException;
 @WebServlet("/currencies")
 public class CurrenciesServlet extends HttpServlet {
 
-    Service service = new Service();
+    CurrencyService service = new CurrencyService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -22,7 +22,7 @@ public class CurrenciesServlet extends HttpServlet {
             resp.getWriter().write(service.currencyListJsonResp());
         } catch (Exception e){
             e.printStackTrace();
-            resp.setStatus(501);
+            resp.setStatus(500);
         }
     }
 }

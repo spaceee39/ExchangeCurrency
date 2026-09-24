@@ -1,6 +1,6 @@
 package Service;
 
-import DAO.CurrenciesDAO;
+import DAO.CurrenciesDao;
 import Model.Currency;
 import com.zaxxer.hikari.HikariDataSource;
 import tools.jackson.databind.ObjectMapper;
@@ -9,12 +9,12 @@ import java.util.List;
 
 import static Config.DataHikariSourceFabric.create;
 
-public class Service {
+public class CurrencyService {
 
     // пулл наших connection
     HikariDataSource hikariDataSource = create();
     // создаем дао и прокидываем туда ссылку на пул
-    CurrenciesDAO currenciesDAO = new CurrenciesDAO(hikariDataSource);
+    CurrenciesDao currenciesDAO = new CurrenciesDao(hikariDataSource);
 
     ObjectMapper mapper = new ObjectMapper();
 

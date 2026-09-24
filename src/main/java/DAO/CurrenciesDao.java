@@ -7,11 +7,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrenciesDAO {
+public class CurrenciesDao {
 
     HikariDataSource connectionSource;
 
-    public CurrenciesDAO(HikariDataSource connectionSource) {
+    public CurrenciesDao(HikariDataSource connectionSource) {
         this.connectionSource = connectionSource;
     }
 
