@@ -3,7 +3,6 @@ package Config;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import javax.sql.DataSource;
 import java.util.Properties;
 
 import static Config.ConfigLoader.loadConfig;
@@ -11,7 +10,7 @@ import static Config.ConfigLoader.loadConfig;
 public class DataHikariSourceFabric {
 
     //статик который возвращает наше хранилище данных (Connection), наш так называемый Пул
-    public static DataSource create(){
+    public static HikariDataSource create(){
 
         Properties dbConfig = loadConfig();
 
@@ -20,6 +19,7 @@ public class DataHikariSourceFabric {
         hikariConfig.setJdbcUrl(dbConfig.getProperty("jdbc.url"));
         hikariConfig.setUsername(dbConfig.getProperty("jdbc.username"));
         hikariConfig.setPassword(dbConfig.getProperty("jdbc.password"));
+        hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
 
         return new HikariDataSource(hikariConfig);
         }
