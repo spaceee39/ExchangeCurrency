@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/currencies")
-public class CurrenciesServlet extends HttpServlet {
+public class CurrenciesServlet extends BaseServlet {
 
     CurrencyService service = new CurrencyService();
 
@@ -19,7 +19,7 @@ public class CurrenciesServlet extends HttpServlet {
         try {
             resp.setContentType("application/json");
             resp.setStatus(200);
-            resp.getWriter().write(service.currencyListJsonResp());
+            resp.getWriter().write(service.getCurrencyListJson());
         } catch (Exception e){
             e.printStackTrace();
             resp.setStatus(500);

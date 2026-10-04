@@ -15,7 +15,7 @@ public class CurrenciesDao {
         this.connectionSource = connectionSource;
     }
 
-    public List<Currency> AllCurrencies(){
+    public List<Currency> findAll(){
         String sqlRequest = "select * from currencies";
         List<Currency> currencyList = new ArrayList<>();
         try(
