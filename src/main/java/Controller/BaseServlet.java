@@ -1,35 +1,43 @@
 package Controller;
 
-import Exceptions.IncorrectRequestException;
+import Exceptions.InvalidRequestException;
+import Service.CurrencyService;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Setter;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+@Setter
+public abstract class BaseServlet extends HttpServlet {
 
-public class BaseServlet extends HttpServlet {
+    protected CurrencyService currencyService;
+    protected ObjectMapper objectMapper;
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
-
-    public void sendHttpResponse(HttpServletResponse response, int status, String responseString){
-        try {
-            response.setStatus(status);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(responseString);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+    @Override
+    public void init() throws ServletException {
+        ServletContext servletContext = getServletContext();
+        setCurrencyService((CurrencyService) servletContext.getAttribute("currencyService"));
+        setObjectMapper((ObjectMapper) servletContext.getAttribute("objectMapper"));
     }
 
-    public String pathCurrencyInfo(HttpServletRequest req){
+    // метод возвращает ответ, чтобы при желании можно было добавить самому заголовки или что то еще
+    public HttpServletResponse setHttpResponse(HttpServletResponse response, int status, String responseBody) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(responseBody);
+        return response;
+    }
+
+    public String getPathInfo(HttpServletRequest req){
         String[] path = req.getPathInfo().split("/");
         if (path.length < 3){
         return path[1];
-        }else throw new IncorrectRequestException("invalid path name");
+        } else throw new InvalidRequestException("invalid path name");
     }
 
 }

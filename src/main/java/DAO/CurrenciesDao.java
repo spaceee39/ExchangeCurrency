@@ -9,19 +9,19 @@ import java.util.List;
 
 public class CurrenciesDao {
 
-    HikariDataSource connectionSource;
+    private final HikariDataSource connectionSource;
 
-    public CurrenciesDao(HikariDataSource connectionSource) {
-        this.connectionSource = connectionSource;
-    }
+    //константы(запросы в баз)
+    private static final String GET_ALL_CURRENCIES = "SELECT * FROM currencies;";
+    private static final String GET_BY_CODE = "SELECT * FROM currencies WHERE code = ?;";
+
 
     public List<Currency> findAll(){
-        String sqlRequest = "select * from currencies";
         List<Currency> currencyList = new ArrayList<>();
         try(
             Connection connection = connectionSource.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sqlRequest);
+            ResultSet resultSet = statement.executeQuery(GET_ALL_CURRENCIES);
             ) {
             while (resultSet.next()){
                 int id = resultSet.getInt("ID");
@@ -37,6 +37,20 @@ public class CurrenciesDao {
         return currencyList;
     }
 
+    public Currency findCurrencyByCode(String code){
+        try(
+            Connection connection = connectionSource.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(GET_BY_CODE);
+        ) {
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
+    public CurrenciesDao(HikariDataSource connectionSource) {
+        this.connectionSource = connectionSource;
+    }
 }

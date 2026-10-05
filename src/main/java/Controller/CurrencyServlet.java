@@ -13,9 +13,7 @@ public class CurrencyServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String currency = pathCurrencyInfo(req);
-
-
 
     }
+
 }
