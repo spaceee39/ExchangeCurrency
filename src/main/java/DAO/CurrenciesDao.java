@@ -56,7 +56,7 @@ public class CurrenciesDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null; // валюта не найдена
+        return Optional.empty(); // валюта не найдена
     }
 
 

@@ -36,6 +36,7 @@ public abstract class BaseServlet extends HttpServlet {
     public String getPathInfo(HttpServletRequest req){
         String[] path = req.getPathInfo().split("/");
         if (path.length < 3){
+            if(path[1] == null) throw new NullPointerException("The currency code is missing from the address.");
         return path[1];
         } else throw new InvalidRequestException("invalid path name");
     }
