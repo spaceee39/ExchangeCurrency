@@ -20,7 +20,7 @@ public class CurrencyServlet extends BaseServlet {
             Currency currency = currencyService.getCurrencyByCode(currencyCode);
             setHttpResponse(resp, 200, objectMapper.writeValueAsString(currency));
         } catch (CurrencyNotFoundException e) {
-            resp.sendError(500, "Invalid currency name.");
+            resp.sendError(400, "Invalid currency name.");
         } catch (RuntimeException e){
             resp.sendError(500, "An unexpected error occurred.");
         }
