@@ -1,6 +1,7 @@
 package Controller;
 
 import Exceptions.CurrencyNotFoundException;
+import Model.Currency;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,12 +15,14 @@ public class CurrencyServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(getPathInfo(req));
         try {
             String currencyCode = getPathInfo(req);
-            currencyService.getCurrencyByCode(currencyCode);
+            Currency currency = currencyService.getCurrencyByCode(currencyCode);
+            setHttpResponse(resp, 200, objectMapper.writeValueAsString(currency));
         } catch (CurrencyNotFoundException e) {
-            resp.sendError(500, e.getMessage());
+            resp.sendError(500, "Invalid currency name.");
+        } catch (RuntimeException e){
+            resp.sendError(500, "An unexpected error occurred.");
         }
     }
 

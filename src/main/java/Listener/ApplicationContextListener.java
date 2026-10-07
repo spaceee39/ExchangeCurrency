@@ -15,21 +15,25 @@ public class ApplicationContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        try {
 
-        HikariDataSource connectionSource = DataHikariSourceFabric.create();
+            HikariDataSource connectionSource = DataHikariSourceFabric.create();
 
-        // создаем все, что будем держать в контексте приложения
-        CurrenciesDao currenciesDao = new CurrenciesDao(connectionSource);
-        ObjectMapper objectMapper = new ObjectMapper();
-        CurrencyService currencyService = new CurrencyService(currenciesDao);
+            // создаем все, что будем держать в контексте приложения
+            CurrenciesDao currenciesDao = new CurrenciesDao(connectionSource);
+            ObjectMapper objectMapper = new ObjectMapper();
+            CurrencyService currencyService = new CurrencyService(currenciesDao);
 
-        ServletContext servletContext = sce.getServletContext();
+            ServletContext servletContext = sce.getServletContext();
 
-        servletContext.setAttribute("currenciesDao", currenciesDao);
-        servletContext.setAttribute("objectMapper", objectMapper);
-        servletContext.setAttribute("currencyService", currencyService);
-        // кладем пулл в контекст чтобы потом корректно завершить программу
-        servletContext.setAttribute("connectionSource", connectionSource);
+            servletContext.setAttribute("currenciesDao", currenciesDao);
+            servletContext.setAttribute("objectMapper", objectMapper);
+            servletContext.setAttribute("currencyService", currencyService);
+            // кладем пулл в контекст чтобы потом корректно завершить программу
+            servletContext.setAttribute("connectionSource", connectionSource);
+        }catch (Throwable t){
+            t.printStackTrace();
+        }
     }
 
     @Override
