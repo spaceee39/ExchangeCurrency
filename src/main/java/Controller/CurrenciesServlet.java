@@ -1,6 +1,6 @@
 package Controller;
 
-import Exceptions.CurrenciesNotFoundException;
+import Exceptions.CurrencyNotFoundException;
 import Model.Currency;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,7 +19,7 @@ public class CurrenciesServlet extends BaseServlet {
             List<Currency> currencyList = currencyService.getCurrencyList();
             String responseBody = objectMapper.writeValueAsString(currencyList);
             setHttpResponse(resp, 200, responseBody);
-        } catch (CurrenciesNotFoundException e){
+        } catch (CurrencyNotFoundException e){
             resp.sendError(500, e.getMessage());
         }
 

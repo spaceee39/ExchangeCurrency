@@ -6,6 +6,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CurrenciesDao {
 
@@ -37,16 +38,25 @@ public class CurrenciesDao {
         return currencyList;
     }
 
-    public Currency findCurrencyByCode(String code){
-        try(
-            Connection connection = connectionSource.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(GET_BY_CODE);
-        ) {
+    public Optional<Currency> findCurrencyByCode(String currencyCode) {
+        try (Connection connection = connectionSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(GET_BY_CODE)) {
 
+            statement.setString(1, currencyCode);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = resultSet.getInt("ID");
+                    String code = resultSet.getString("code");
+                    String fullName = resultSet.getString("FullName");
+                    String sign = resultSet.getString("Sign");
+                    return Optional.of(new Currency(id, code, fullName, sign));
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return null; // валюта не найдена
     }
 
 
