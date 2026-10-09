@@ -1,5 +1,6 @@
 package Model;
 
+import DTO.CurrencyDto;
 import lombok.Getter;
 
 @Getter
@@ -15,6 +16,12 @@ public class Currency {
         this.code = code;
         this.fullName = fullName;
         this.sign = sign;
+    }
+
+    public Currency(CurrencyDto currencyDto) {
+    code = currencyDto.code();
+    fullName = currencyDto.fullName();
+    sign = currencyDto.sign();
     }
 }
 
