@@ -17,7 +17,7 @@ public class CurrenciesDao {
     //константы(запросы в баз)
     private static final String GET_ALL_CURRENCIES = "SELECT * FROM currencies;";
     private static final String GET_BY_CODE = "SELECT * FROM currencies WHERE code = ?;";
-    private static final String ADD_NEW_CURRENCY = "INSERT INTO currencies (code, FullName, Sign) value ('?', '?', '?');";
+    private static final String ADD_NEW_CURRENCY = "INSERT INTO currencies (code, FullName, Sign) value (?, ?, ?);";
 
 
     public List<Currency> findAll(){
@@ -67,7 +67,7 @@ public class CurrenciesDao {
             preparedStatement.setString(1,currency.getCode());
             preparedStatement.setString(2, currency.getFullName());
             preparedStatement.setString(3, currency.getSign());
-            int affected = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
             } catch (SQLException e) {
             if(e.getErrorCode() == 1062){
                 throw new CurrencyAlreadyExists("This currency already exists", e);

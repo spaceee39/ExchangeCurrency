@@ -34,7 +34,7 @@ public class CurrenciesServlet extends BaseServlet {
         String code = req.getParameter("code");
         String sign = req.getParameter("sign");
         if (isBlank(code) || isBlank(fullName) || isBlank(sign)) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required field");
+            resp.sendError(400, "Missing required field");
             return;
         }
         try {
