@@ -2,6 +2,7 @@ package Controller;
 
 import Exceptions.InvalidRequestException;
 import Service.CurrencyService;
+import Service.ExchangeRatesService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -15,12 +16,14 @@ import java.io.IOException;
 public abstract class BaseServlet extends HttpServlet {
 
     protected CurrencyService currencyService;
+    protected ExchangeRatesService exchangeRatesService;
     protected ObjectMapper objectMapper;
 
     @Override
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
         setCurrencyService((CurrencyService) servletContext.getAttribute("currencyService"));
+        setExchangeRatesService((ExchangeRatesService) servletContext.getAttribute("exchangeRatesService"));
         setObjectMapper((ObjectMapper) servletContext.getAttribute("objectMapper"));
     }
 

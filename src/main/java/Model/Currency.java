@@ -1,27 +1,36 @@
 package Model;
 
-import DTO.CurrencyDto;
+import DTO.CurrencyRequestDto;
+import DTO.CurrencyResponseDto;
 import lombok.Getter;
 
 @Getter
 public class Currency {
-    private int id;
+    private Long id;
     private String code;
     private String fullName;
     private String sign;
 
 
-    public Currency(int id, String code, String fullName, String sign) {
+    public Currency(Long id, String code, String fullName, String sign) {
         this.id = id;
         this.code = code;
         this.fullName = fullName;
         this.sign = sign;
     }
 
-    public Currency(CurrencyDto currencyDto) {
-    code = currencyDto.code();
-    fullName = currencyDto.fullName();
-    sign = currencyDto.sign();
+    public Currency(CurrencyResponseDto currencyResponseDto) {
+    id = currencyResponseDto.id();
+    code = currencyResponseDto.code();
+    fullName = currencyResponseDto.fullName();
+    sign = currencyResponseDto.sign();
     }
+
+    public Currency(CurrencyRequestDto currencyRequestDtoDto) {
+        code = currencyRequestDtoDto.code();
+        fullName = currencyRequestDtoDto.fullName();
+        sign = currencyRequestDtoDto.sign();
+    }
+
 }
 

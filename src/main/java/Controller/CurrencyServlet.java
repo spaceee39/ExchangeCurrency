@@ -1,10 +1,9 @@
 package Controller;
 
+import DTO.CurrencyResponseDto;
 import Exceptions.CurrencyNotFoundException;
-import Model.Currency;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -17,8 +16,8 @@ public class CurrencyServlet extends BaseServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String currencyCode = getPathInfo(req);
-            Currency currency = currencyService.getCurrencyByCode(currencyCode);
-            setHttpResponse(resp, 200, objectMapper.writeValueAsString(currency));
+            CurrencyResponseDto currencyResponseDto = currencyService.getCurrencyByCode(currencyCode);
+            setHttpResponse(resp, 200, objectMapper.writeValueAsString(currencyResponseDto));
         } catch (CurrencyNotFoundException e) {
             resp.sendError(404, "Currency is not found.");
         } catch (NullPointerException e){

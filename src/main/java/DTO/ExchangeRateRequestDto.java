@@ -1,7 +1,7 @@
 package DTO;
 
-public record CurrencyDto(
+public record ExchangeRateRequestDto(
         String fullName,
         String code,
         String sign
-) { }
+) {}

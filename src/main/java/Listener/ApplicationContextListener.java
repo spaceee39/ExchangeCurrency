@@ -2,7 +2,9 @@ package Listener;
 
 import Config.DataHikariSourceFabric;
 import DAO.CurrenciesDao;
+import DAO.ExchangeRatesDao;
 import Service.CurrencyService;
+import Service.ExchangeRatesService;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
@@ -21,14 +23,18 @@ public class ApplicationContextListener implements ServletContextListener {
 
             // создаем все, что будем держать в контексте приложения
             CurrenciesDao currenciesDao = new CurrenciesDao(connectionSource);
+            ExchangeRatesDao exchangeRatesDao = new ExchangeRatesDao(connectionSource);
             ObjectMapper objectMapper = new ObjectMapper();
             CurrencyService currencyService = new CurrencyService(currenciesDao);
+            ExchangeRatesService exchangeRatesService = new ExchangeRatesService(exchangeRatesDao);
 
             ServletContext servletContext = sce.getServletContext();
 
             servletContext.setAttribute("currenciesDao", currenciesDao);
+            servletContext.setAttribute("exchangeRatesDao", exchangeRatesDao);
             servletContext.setAttribute("objectMapper", objectMapper);
             servletContext.setAttribute("currencyService", currencyService);
+            servletContext.setAttribute("exchangeRatesService", exchangeRatesService);
             // кладем пулл в контекст чтобы потом корректно завершить программу
             servletContext.setAttribute("connectionSource", connectionSource);
         }catch (Throwable t){

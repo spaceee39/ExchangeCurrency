@@ -1,10 +1,10 @@
 package Controller;
 
-import DTO.CurrencyDto;
+import DTO.CurrencyRequestDto;
+import DTO.CurrencyResponseDto;
 import Exceptions.CurrencyAlreadyExists;
 import Exceptions.CurrencyNotFoundException;
 import Exceptions.CurrencySaveException;
-import Model.Currency;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,8 +20,8 @@ public class CurrenciesServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            List<Currency> currencyList = currencyService.getCurrencyList();
-            String responseBody = objectMapper.writeValueAsString(currencyList);
+            List<CurrencyResponseDto> currencyDtoList = currencyService.getCurrencyList();
+            String responseBody = objectMapper.writeValueAsString(currencyDtoList);
             setHttpResponse(resp, 200, responseBody);
         } catch (CurrencyNotFoundException e) {
             resp.sendError(500, e.getMessage());
@@ -38,8 +38,8 @@ public class CurrenciesServlet extends BaseServlet {
             return;
         }
         try {
-            CurrencyDto currencyDto = new CurrencyDto(fullName, code, sign);
-            currencyService.addNewCurrency(currencyDto);
+            CurrencyRequestDto currencyRequestDto = new CurrencyRequestDto(fullName, code, sign);
+            currencyService.addNewCurrency(currencyRequestDto);
         } catch (IllegalArgumentException e) {
             resp.sendError(400, e.getMessage());
         } catch (CurrencyAlreadyExists e) {

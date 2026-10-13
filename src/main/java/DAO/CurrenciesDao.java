@@ -1,6 +1,7 @@
 package DAO;
 
 import Exceptions.CurrencyAlreadyExists;
+import Exceptions.CurrencyNotFoundException;
 import Exceptions.CurrencySaveException;
 import Model.Currency;
 import com.zaxxer.hikari.HikariDataSource;
@@ -26,7 +27,7 @@ public class CurrenciesDao {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(GET_ALL_CURRENCIES);) {
             while (resultSet.next()){
-                int id = resultSet.getInt("ID");
+                Long id = (long) resultSet.getInt("ID");
                 String code = resultSet.getString("code");
                 String fullName = resultSet.getString("FullName");
                 String sign = resultSet.getString("Sign");
@@ -34,7 +35,7 @@ public class CurrenciesDao {
                 currencyList.add(currency);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new CurrencyNotFoundException("An error occurred while searching for currencies.");
         }
         return currencyList;
     }
@@ -45,7 +46,7 @@ public class CurrenciesDao {
             statement.setString(1, currencyCode);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    int id = resultSet.getInt("ID");
+                    Long id = (long) resultSet.getInt("ID");
                     String code = resultSet.getString("code");
                     String fullName = resultSet.getString("FullName");
                     String sign = resultSet.getString("Sign");
