@@ -42,9 +42,12 @@ public class ExchangeRatesDao {
                 ExchangeRate exchangeRate = new ExchangeRate(resultSet.getLong("rate_id"), baseCurrency, targetCurrency, resultSet.getBigDecimal("rate"));
                 exchangeRateList.add(exchangeRate);
             }
+            if(exchangeRateList.isEmpty()){
+                throw new RuntimeException("No exchange rates found");
+            }
             return exchangeRateList;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("An unknown error occured");
         }
     }
 

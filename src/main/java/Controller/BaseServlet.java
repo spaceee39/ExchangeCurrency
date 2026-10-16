@@ -41,7 +41,7 @@ public abstract class BaseServlet extends HttpServlet {
         if (path.length < 3){
             if(path[1] == null) throw new NullPointerException("The currency code is missing from the address.");
         return path[1];
-        } else throw new InvalidRequestException("invalid path name");
+        } else throw new InvalidRequestException("Invalid path name");
     }
 
 }
