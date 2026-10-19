@@ -11,6 +11,8 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @WebListener
 public class ApplicationContextListener implements ServletContextListener {
@@ -24,7 +26,7 @@ public class ApplicationContextListener implements ServletContextListener {
             // создаем все, что будем держать в контексте приложения
             CurrenciesDao currenciesDao = new CurrenciesDao(connectionSource);
             ExchangeRatesDao exchangeRatesDao = new ExchangeRatesDao(connectionSource);
-            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectMapper objectMapper = JsonMapper.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
             CurrencyService currencyService = new CurrencyService(currenciesDao);
             ExchangeRatesService exchangeRatesService = new ExchangeRatesService(exchangeRatesDao);
 

@@ -27,7 +27,7 @@ public abstract class BaseServlet extends HttpServlet {
         setObjectMapper((ObjectMapper) servletContext.getAttribute("objectMapper"));
     }
 
-    // метод возвращает ответ, чтобы при желании можно было добавить самому заголовки или что то еще
+    // метод возвращает ответ, чтобы при желании можно было добавить самому заголовки или что-то еще
     public HttpServletResponse setHttpResponse(HttpServletResponse response, int status, String responseBody) throws IOException {
         response.setStatus(status);
         response.setContentType("application/json");
@@ -39,7 +39,7 @@ public abstract class BaseServlet extends HttpServlet {
     public String getPathInfo(HttpServletRequest req){
         String[] path = req.getPathInfo().split("/");
         if (path.length < 3){
-            if(path[1] == null) throw new NullPointerException("The currency code is missing from the address.");
+            if(path[1] == null) throw new NullPointerException("The code is missing from the address.");
         return path[1];
         } else throw new InvalidRequestException("Invalid path name");
     }

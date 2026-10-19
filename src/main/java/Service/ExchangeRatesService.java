@@ -19,6 +19,10 @@ public class ExchangeRatesService {
         return responseDtos;
     }
 
+    public ExchangeRateResponseDto getRateByCodes(String baseCurrencyCode, String targetCurrencyCode) {
+        ExchangeRate exchangeRate = exchangeRatesDao.findByCodes(baseCurrencyCode, targetCurrencyCode);
+        return new ExchangeRateResponseDto(exchangeRate.getId(), exchangeRate.getBaseCurrencyId(), exchangeRate.getTargetCurrencyId(), exchangeRate.getRate());
+    }
 
     public ExchangeRatesService(ExchangeRatesDao exchangeRatesDao) {
         this.exchangeRatesDao = exchangeRatesDao;
