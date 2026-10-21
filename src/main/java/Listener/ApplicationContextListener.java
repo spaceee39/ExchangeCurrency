@@ -28,7 +28,7 @@ public class ApplicationContextListener implements ServletContextListener {
             ExchangeRatesDao exchangeRatesDao = new ExchangeRatesDao(connectionSource);
             ObjectMapper objectMapper = JsonMapper.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
             CurrencyService currencyService = new CurrencyService(currenciesDao);
-            ExchangeRatesService exchangeRatesService = new ExchangeRatesService(exchangeRatesDao);
+            ExchangeRatesService exchangeRatesService = new ExchangeRatesService(exchangeRatesDao, currenciesDao);
 
             ServletContext servletContext = sce.getServletContext();
 

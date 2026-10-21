@@ -49,7 +49,5 @@ public class CurrenciesServlet extends BaseServlet {
         }
     }
 
-    private boolean isBlank(String s) {
-        return s == null || s.isBlank();
-    }
+
 }

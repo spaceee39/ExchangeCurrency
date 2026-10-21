@@ -1,7 +1,10 @@
 package DTO;
 
+import java.math.BigDecimal;
+
 public record ExchangeRateRequestDto(
-        String fullName,
-        String code,
-        String sign
-) {}
+        String BaseCurrencyCode,
+        String TargetCurrencyCode,
+        BigDecimal rate
+) {
+}

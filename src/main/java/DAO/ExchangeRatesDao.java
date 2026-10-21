@@ -4,6 +4,7 @@ import Model.Currency;
 import Model.ExchangeRate;
 import com.zaxxer.hikari.HikariDataSource;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ExchangeRatesDao {
     ;
     """;
 
-    private final String GET_RATE_BY_CODE = """
+    private static final String GET_RATE_BY_CODE = """
             SELECT  er.ID       AS rate_id,
                     er.Rate     AS rate,
                     c1.ID       AS base_id,
@@ -47,6 +48,9 @@ public class ExchangeRatesDao {
              AND c2.code = ?
               ;
             """;
+
+    private static final String SAVE_EXCHANGERATE =
+    "INSERT INTO exchangeRate (baseCurrencyId, targetCurrencyId, rate) value (? ,? ,?)";
 
     public List<ExchangeRate> findAll(){
         try (Connection connection = connectionSource.getConnection();
@@ -81,6 +85,20 @@ public class ExchangeRatesDao {
             } else throw new RuntimeException("Rate not found");
         } catch (SQLException e) {
             throw new RuntimeException("An unknown error occured");
+        }
+    }
+
+    public void save(Currency baseCurrency, Currency targetCurrency, BigDecimal rate){
+        try(
+            Connection connection = connectionSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(SAVE_EXCHANGERATE);
+            ){
+            statement.setLong(1, baseCurrency.getId());
+            statement.setLong(2, targetCurrency.getId());
+            statement.setBigDecimal(3, rate);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

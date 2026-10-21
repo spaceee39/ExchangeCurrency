@@ -44,4 +44,8 @@ public abstract class BaseServlet extends HttpServlet {
         } else throw new InvalidRequestException("Invalid path name");
     }
 
+    protected boolean isBlank(String s) {
+        return s == null || s.isBlank();
+    }
+
 }
