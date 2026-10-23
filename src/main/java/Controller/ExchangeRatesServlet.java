@@ -2,6 +2,9 @@ package Controller;
 
 import DTO.ExchangeRateRequestDto;
 import DTO.ExchangeRateResponseDto;
+import Exceptions.CurrencyAlreadyExists;
+import Exceptions.CurrencyNotFoundException;
+import Exceptions.ValidationException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 
 @WebServlet("/exchangeRates")
 public class ExchangeRatesServlet extends BaseServlet {
@@ -27,24 +31,52 @@ public class ExchangeRatesServlet extends BaseServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         try{
-            String baseCurrencyCode = req.getParameter("baseCurrencyCode").toUpperCase();
-            String targetCurrencyCode = req.getParameter("targetCurrencyCode").toUpperCase();
-            BigDecimal rate = new BigDecimal(req.getParameter("rate"));
-            if(isBlank(targetCurrencyCode) || isBlank(baseCurrencyCode) || rate == null){
-                resp.sendError(400, "A required form field is missing.");
-            }
-            if(targetCurrencyCode.equals(baseCurrencyCode)){
-                resp.sendError(400, "The base currency is the same as the target currency.");
-            }
-            if(rate.compareTo(BigDecimal.ZERO) < 0){
-                resp.sendError(400, "Rate less than 0.");
-            }
+            String baseCurrencyCode = getCurrencyCode(req, "baseCurrencyCode");
+            String targetCurrencyCode = getCurrencyCode(req, "targetCurrencyCode");
+            BigDecimal rate = getBigDecimal(req, "rate");
+            compareCodes(baseCurrencyCode, targetCurrencyCode);
 
             exchangeRatesService.createNewRate(new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, rate));
 
+        }catch (ValidationException e){
+            resp.sendError(400, e.getMessage());
+        }catch (CurrencyNotFoundException e){
+            resp.sendError(404, e.getMessage());
+        } catch (CurrencyAlreadyExists e) {
+          resp.sendError(409, e.getMessage());
         } catch (RuntimeException e){
             resp.sendError(500, "Internal server error");
         }
     }
+
+    protected String getCurrencyCode(HttpServletRequest req, String parameterName) {
+        String value = req.getParameter(parameterName);
+        if (isBlank(value)) {
+            throw new ValidationException("Parameter " + parameterName + " is required.");
+        }
+        value = value.strip().toUpperCase(Locale.ROOT);
+        if (!value.matches("[A-Z]{3}")) {
+            throw new ValidationException("Parameter " + parameterName + " must be a 3-letter currency code.");
+        }
+        return value;
+    }
+
+    public BigDecimal getBigDecimal(HttpServletRequest req, String parameterName){
+        try {
+            BigDecimal rate = new BigDecimal(req.getParameter(parameterName));
+            if (rate.compareTo(BigDecimal.ZERO) < 0) {
+                throw new ValidationException("Rate less than 0.");
+            }
+            return rate;
+        }catch (NullPointerException e){
+            throw new ValidationException("Parameter " + parameterName + " is required.");
+        }
+    }
+
+    public void compareCodes(String baseCurrencyCode, String targetCurrencyCode){
+        if(baseCurrencyCode.equals(targetCurrencyCode)) throw new ValidationException("The base currency matches the target currency");
+    }
+
+
 
 }

@@ -1,5 +1,6 @@
 package DAO;
 
+import Exceptions.CurrencyAlreadyExists;
 import Model.Currency;
 import Model.ExchangeRate;
 import com.zaxxer.hikari.HikariDataSource;
@@ -50,7 +51,7 @@ public class ExchangeRatesDao {
             """;
 
     private static final String SAVE_EXCHANGERATE =
-    "INSERT INTO exchangeRate (baseCurrencyId, targetCurrencyId, rate) value (? ,? ,?)";
+    "INSERT INTO exchangeRates (baseCurrencyId, targetCurrencyId, rate) value (? ,? ,?)";
 
     public List<ExchangeRate> findAll(){
         try (Connection connection = connectionSource.getConnection();
@@ -98,6 +99,9 @@ public class ExchangeRatesDao {
             statement.setBigDecimal(3, rate);
             statement.execute();
         } catch (SQLException e) {
+            if(e.getErrorCode() == 1062){
+                throw new CurrencyAlreadyExists("This currency already exists", e);
+            }
             throw new RuntimeException(e);
         }
     }

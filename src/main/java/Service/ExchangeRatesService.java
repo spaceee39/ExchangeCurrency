@@ -4,6 +4,7 @@ import DAO.CurrenciesDao;
 import DAO.ExchangeRatesDao;
 import DTO.ExchangeRateRequestDto;
 import DTO.ExchangeRateResponseDto;
+import Exceptions.CurrencyNotFoundException;
 import Model.Currency;
 import Model.ExchangeRate;
 
@@ -32,6 +33,9 @@ public class ExchangeRatesService {
     public void createNewRate(ExchangeRateRequestDto exchangeRateRequestDto){
         Optional<Currency> baseCurrency = currenciesDao.findCurrencyByCode(exchangeRateRequestDto.BaseCurrencyCode());
         Optional<Currency> targetCurrency = currenciesDao.findCurrencyByCode(exchangeRateRequestDto.TargetCurrencyCode());
+        if(baseCurrency.isEmpty() || targetCurrency.isEmpty()){
+            throw new CurrencyNotFoundException("One (or both) currencies of a currency pair does not exist");
+        }
         exchangeRatesDao.save(baseCurrency.get(), targetCurrency.get(), exchangeRateRequestDto.rate());
     }
 

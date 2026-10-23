@@ -20,10 +20,4 @@ public class ExchangeRate {
         this.targetCurrencyId = targetCurrencyId;
         this.rate = rate;
     }
-
-    public ExchangeRate(ExchangeRateRequestDto exchangeRateRequestDto) {
-        this.baseCurrencyId = baseCurrencyId;
-        this.targetCurrencyId = targetCurrencyId;
-        this.rate = rate;
-    }
 }
