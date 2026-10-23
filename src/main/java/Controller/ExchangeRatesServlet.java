@@ -63,13 +63,18 @@ public class ExchangeRatesServlet extends BaseServlet {
 
     public BigDecimal getBigDecimal(HttpServletRequest req, String parameterName){
         try {
-            BigDecimal rate = new BigDecimal(req.getParameter(parameterName));
+            String value = req.getParameter(parameterName);
+            if (isBlank(value)) {
+                throw new ValidationException("Parameter " + parameterName + " is required.");
+            }
+            String clear = value.trim().replace(',', '.');
+            BigDecimal rate = new BigDecimal(clear);
             if (rate.compareTo(BigDecimal.ZERO) < 0) {
                 throw new ValidationException("Rate less than 0.");
             }
             return rate;
-        }catch (NullPointerException e){
-            throw new ValidationException("Parameter " + parameterName + " is required.");
+        }catch (NumberFormatException e){
+            throw new ValidationException("Parameter" + parameterName + " must be a number.");
         }
     }
 
