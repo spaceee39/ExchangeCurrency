@@ -39,6 +39,10 @@ public class ExchangeRatesService {
         exchangeRatesDao.save(baseCurrency.get(), targetCurrency.get(), exchangeRateRequestDto.rate());
     }
 
+    public void patchRate(ExchangeRateRequestDto exchangeRateRequestDto){
+        exchangeRatesDao.updateRate(exchangeRateRequestDto.BaseCurrencyCode(), exchangeRateRequestDto.TargetCurrencyCode(), exchangeRateRequestDto.rate());
+    }
+
     public ExchangeRatesService(ExchangeRatesDao exchangeRatesDao, CurrenciesDao currenciesDao) {
         this.exchangeRatesDao = exchangeRatesDao;
         this.currenciesDao = currenciesDao;

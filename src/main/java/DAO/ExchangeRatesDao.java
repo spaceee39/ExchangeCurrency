@@ -1,6 +1,7 @@
 package DAO;
 
 import Exceptions.CurrencyAlreadyExists;
+import Exceptions.ExchangeRateNotFoundException;
 import Model.Currency;
 import Model.ExchangeRate;
 import com.zaxxer.hikari.HikariDataSource;
@@ -50,8 +51,18 @@ public class ExchangeRatesDao {
               ;
             """;
 
-    private static final String SAVE_EXCHANGERATE =
+    private static final String SAVE_RATE =
     "INSERT INTO exchangeRates (baseCurrencyId, targetCurrencyId, rate) value (? ,? ,?)";
+
+    private static final String PATCH_RATE = """
+            UPDATE exchangerates AS er
+            JOIN currencies c1 ON c1.id = er.baseCurrencyId
+            JOIN currencies c2 ON c2.id = er.targetCurrencyId
+            SET rate = ?
+            WHERE c1.code = ?
+            AND c2.code = ?
+            ;
+            """;
 
     public List<ExchangeRate> findAll(){
         try (Connection connection = connectionSource.getConnection();
@@ -92,7 +103,7 @@ public class ExchangeRatesDao {
     public void save(Currency baseCurrency, Currency targetCurrency, BigDecimal rate){
         try(
             Connection connection = connectionSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(SAVE_EXCHANGERATE);
+            PreparedStatement statement = connection.prepareStatement(SAVE_RATE);
             ){
             statement.setLong(1, baseCurrency.getId());
             statement.setLong(2, targetCurrency.getId());
@@ -106,8 +117,22 @@ public class ExchangeRatesDao {
         }
     }
 
-
-
+    public void updateRate(String baseCurrencyId, String targetCurrencyId, BigDecimal rate){
+        try(
+            Connection connection = connectionSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(PATCH_RATE);
+            ){
+            statement.setBigDecimal(1, rate);
+            statement.setString(2, baseCurrencyId);
+            statement.setString(3, targetCurrencyId);
+            int updated = statement.executeUpdate();
+            if (updated == 0) {
+                throw new ExchangeRateNotFoundException("The currency pair is not in the database");
+            }
+        }catch (SQLException e){
+            throw new RuntimeException();
+        }
+    }
 
     public ExchangeRatesDao(HikariDataSource connectionSource) {
         this.connectionSource = connectionSource;

@@ -4,6 +4,7 @@ import DTO.ExchangeRateRequestDto;
 import DTO.ExchangeRateResponseDto;
 import Exceptions.CurrencyAlreadyExists;
 import Exceptions.CurrencyNotFoundException;
+import Exceptions.ExchangeRateNotFoundException;
 import Exceptions.ValidationException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -49,6 +50,24 @@ public class ExchangeRatesServlet extends BaseServlet {
         }
     }
 
+    @Override
+    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            String path = getPathInfo(req);
+            String baseCurrencyCode = path.substring(0, 3).toUpperCase(Locale.ROOT);
+            String targetCurrencyCode = path.substring(3, 6).toLowerCase(Locale.ROOT);
+            compareCodes(baseCurrencyCode, targetCurrencyCode);
+            BigDecimal rate = getBigDecimal(req, "rate");
+            exchangeRatesService.patchRate(new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, rate));
+        }catch (ValidationException e){
+            resp.sendError(400, e.getMessage());
+        }catch (ExchangeRateNotFoundException e){
+            resp.sendError(404, e.getMessage());
+        }catch(RuntimeException e){
+            resp.sendError(500, "Internal server error");
+        }
+    }
+
     protected String getCurrencyCode(HttpServletRequest req, String parameterName) {
         String value = req.getParameter(parameterName);
         if (isBlank(value)) {
@@ -60,6 +79,7 @@ public class ExchangeRatesServlet extends BaseServlet {
         }
         return value;
     }
+
 
     public BigDecimal getBigDecimal(HttpServletRequest req, String parameterName){
         try {
