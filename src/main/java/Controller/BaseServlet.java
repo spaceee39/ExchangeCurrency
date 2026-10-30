@@ -1,6 +1,7 @@
 package Controller;
 
 import Exceptions.InvalidRequestException;
+import Exceptions.ValidationException;
 import Service.CurrencyService;
 import Service.ExchangeRatesService;
 import jakarta.servlet.ServletContext;
@@ -12,6 +13,9 @@ import lombok.Setter;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Locale;
+
 @Setter
 public abstract class BaseServlet extends HttpServlet {
 
@@ -48,7 +52,38 @@ public abstract class BaseServlet extends HttpServlet {
         return s == null || s.isBlank();
     }
 
+    protected BigDecimal getBigDecimal(HttpServletRequest req, String parameterName){
+        try {
+            String value = req.getParameter(parameterName);
+            if (isBlank(value)) {
+                throw new ValidationException("Parameter " + parameterName + " is required.");
+            }
+            String clear = value.trim().replace(',', '.');
+            BigDecimal rate = new BigDecimal(clear);
+            if (rate.compareTo(BigDecimal.ZERO) < 0) {
+                throw new ValidationException("Rate less than 0.");
+            }
+            return rate;
+        }catch (NumberFormatException e){
+            throw new ValidationException("Parameter" + parameterName + " must be a number.");
+        }
+    }
 
+    protected String getCurrencyCode(HttpServletRequest req, String parameterName) {
+        String value = req.getParameter(parameterName);
+        if (isBlank(value)) {
+            throw new ValidationException("Parameter " + parameterName + " is required.");
+        }
+        value = value.strip().toUpperCase(Locale.ROOT);
+        if (!value.matches("[A-Z]{3}")) {
+            throw new ValidationException("Parameter " + parameterName + " must be a 3-letter currency code.");
+        }
+        return value;
+    }
+
+    protected void compareCodes(String baseCurrencyCode, String targetCurrencyCode){
+        if(baseCurrencyCode.equals(targetCurrencyCode)) throw new ValidationException("The base currency matches the target currency");
+    }
 
 
 }
