@@ -4,6 +4,7 @@ import Exceptions.InvalidRequestException;
 import Exceptions.ValidationException;
 import Service.CurrencyService;
 import Service.ExchangeRatesService;
+import Service.ExchangeService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -21,6 +22,7 @@ public abstract class BaseServlet extends HttpServlet {
 
     protected CurrencyService currencyService;
     protected ExchangeRatesService exchangeRatesService;
+    protected ExchangeService exchangeService;
     protected ObjectMapper objectMapper;
 
     @Override
@@ -28,6 +30,7 @@ public abstract class BaseServlet extends HttpServlet {
         ServletContext servletContext = getServletContext();
         setCurrencyService((CurrencyService) servletContext.getAttribute("currencyService"));
         setExchangeRatesService((ExchangeRatesService) servletContext.getAttribute("exchangeRatesService"));
+        setExchangeService((ExchangeService) servletContext.getAttribute("exchangeService"));
         setObjectMapper((ObjectMapper) servletContext.getAttribute("objectMapper"));
     }
 

@@ -14,8 +14,6 @@ import java.math.BigDecimal;
 @WebServlet("/exchange")
 public class ExchangeServlet extends BaseServlet{
 
-    ExchangeService exchangeService;
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -29,7 +27,4 @@ public class ExchangeServlet extends BaseServlet{
         }
     }
 
-    public ExchangeServlet(ExchangeService exchangeService) {
-        this.exchangeService = exchangeService;
-    }
 }
