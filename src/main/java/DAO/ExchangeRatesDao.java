@@ -94,7 +94,7 @@ public class ExchangeRatesDao {
                 Currency baseCurrency = new Currency(resultSet.getLong("base_id"), resultSet.getString("base_code"), resultSet.getString("base_name"), resultSet.getString("base_sign"));
                 Currency targetCurrency = new Currency(resultSet.getLong("target_id"), resultSet.getString("target_code"), resultSet.getString("target_name"), resultSet.getString("target_sign"));
                 return new ExchangeRate(resultSet.getLong("rate_id"), baseCurrency, targetCurrency, resultSet.getBigDecimal("rate"));
-            } else throw new ExchangeRateNotFoundException("Rate not found");
+            } else throw new RuntimeException("Rate not found");
         } catch (SQLException e) {
             throw new RuntimeException("An unknown error occured");
         }

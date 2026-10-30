@@ -1,12 +1,10 @@
 package Listener;
 
 import Config.DataHikariSourceFabric;
-import Controller.ExchangeServlet;
 import DAO.CurrenciesDao;
 import DAO.ExchangeRatesDao;
 import Service.CurrencyService;
 import Service.ExchangeRatesService;
-import Service.ExchangeService;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
@@ -31,7 +29,6 @@ public class ApplicationContextListener implements ServletContextListener {
             ObjectMapper objectMapper = JsonMapper.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
             CurrencyService currencyService = new CurrencyService(currenciesDao);
             ExchangeRatesService exchangeRatesService = new ExchangeRatesService(exchangeRatesDao, currenciesDao);
-            ExchangeService exchangeService = new ExchangeService(exchangeRatesDao);
 
             ServletContext servletContext = sce.getServletContext();
 
@@ -40,7 +37,6 @@ public class ApplicationContextListener implements ServletContextListener {
             servletContext.setAttribute("objectMapper", objectMapper);
             servletContext.setAttribute("currencyService", currencyService);
             servletContext.setAttribute("exchangeRatesService", exchangeRatesService);
-            servletContext.setAttribute("exchangeService", exchangeService);
             // кладем пулл в контекст чтобы потом корректно завершить программу
             servletContext.setAttribute("connectionSource", connectionSource);
         }catch (Throwable t){

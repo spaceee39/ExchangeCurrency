@@ -68,7 +68,39 @@ public class ExchangeRatesServlet extends BaseServlet {
         }
     }
 
+    protected String getCurrencyCode(HttpServletRequest req, String parameterName) {
+        String value = req.getParameter(parameterName);
+        if (isBlank(value)) {
+            throw new ValidationException("Parameter " + parameterName + " is required.");
+        }
+        value = value.strip().toUpperCase(Locale.ROOT);
+        if (!value.matches("[A-Z]{3}")) {
+            throw new ValidationException("Parameter " + parameterName + " must be a 3-letter currency code.");
+        }
+        return value;
+    }
 
+
+    public BigDecimal getBigDecimal(HttpServletRequest req, String parameterName){
+        try {
+            String value = req.getParameter(parameterName);
+            if (isBlank(value)) {
+                throw new ValidationException("Parameter " + parameterName + " is required.");
+            }
+            String clear = value.trim().replace(',', '.');
+            BigDecimal rate = new BigDecimal(clear);
+            if (rate.compareTo(BigDecimal.ZERO) < 0) {
+                throw new ValidationException("Rate less than 0.");
+            }
+            return rate;
+        }catch (NumberFormatException e){
+            throw new ValidationException("Parameter" + parameterName + " must be a number.");
+        }
+    }
+
+    public void compareCodes(String baseCurrencyCode, String targetCurrencyCode){
+        if(baseCurrencyCode.equals(targetCurrencyCode)) throw new ValidationException("The base currency matches the target currency");
+    }
 
 
 
