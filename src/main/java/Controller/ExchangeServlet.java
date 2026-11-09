@@ -2,6 +2,8 @@ package Controller;
 
 import DTO.ExchangeRequestDto;
 import DTO.ExchangeResponseDto;
+import Exceptions.ExchangeRateNotFoundException;
+import Exceptions.ValidationException;
 import Service.ExchangeService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,8 +24,12 @@ public class ExchangeServlet extends BaseServlet{
             BigDecimal amount = getBigDecimal(req, "amount");
             ExchangeResponseDto exchange = exchangeService.makeExchange(new ExchangeRequestDto(baseCurrencyCode, targetCurrencyCode, amount));
             resp.getWriter().write(objectMapper.writeValueAsString(exchange));
+        } catch (ValidationException e) {
+            resp.sendError(400, e.getMessage());
+        } catch (ExchangeRateNotFoundException e){
+            resp.sendError(404, e.getMessage());
         } catch (RuntimeException e) {
-            resp.sendError(401, e.getMessage()  );
+            resp.sendError(500, "Internal server error");
         }
     }
 

@@ -20,4 +20,10 @@ public class ExchangeRate {
         this.targetCurrencyId = targetCurrencyId;
         this.rate = rate;
     }
+
+    public ExchangeRate( Currency baseCurrencyId, Currency targetCurrencyId, BigDecimal rate) {
+        this.baseCurrencyId = baseCurrencyId;
+        this.targetCurrencyId = targetCurrencyId;
+        this.rate = rate;
+    }
 }

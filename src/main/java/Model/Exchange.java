@@ -12,10 +12,10 @@ public class Exchange {
     private final BigDecimal amount;
     private final BigDecimal convertedAmount;
 
-    public Exchange(ExchangeRate exchangeRate, BigDecimal amount) {
+    public Exchange(ExchangeRate exchangeRate, BigDecimal amount, BigDecimal convertedAmount) {
         this.exchangeRate = exchangeRate;
         this.amount = amount;
         BigDecimal rate = exchangeRate.getRate();
-        convertedAmount = amount.multiply(rate);
+        this.convertedAmount = convertedAmount;
     }
 }
