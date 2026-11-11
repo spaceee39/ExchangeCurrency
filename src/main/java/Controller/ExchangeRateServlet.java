@@ -17,7 +17,8 @@ public class ExchangeRateServlet extends BaseServlet{
         try{
             String path = getPathInfo(req);
             if(path == null || !path.matches("[A-Za-z]{6}") ){
-                resp.sendError(400, "message: Incorrect currency code");
+                setHttpResponse(resp, 400, "message: Incorrect currency code");
+                return;
             }
             String baseCurrencyCode = path.substring(0,3).toUpperCase();
             String targetCurrencyCode = path.substring(3).toUpperCase();
