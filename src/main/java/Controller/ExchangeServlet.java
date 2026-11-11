@@ -21,6 +21,7 @@ public class ExchangeServlet extends BaseServlet{
         try {
             String baseCurrencyCode = getCurrencyCode(req, "from");
             String targetCurrencyCode = getCurrencyCode(req, "to");
+            super.compareCodes(baseCurrencyCode, targetCurrencyCode);
             BigDecimal amount = getBigDecimal(req, "amount");
             ExchangeResponseDto exchange = exchangeService.makeExchange(new ExchangeRequestDto(baseCurrencyCode, targetCurrencyCode, amount));
             resp.getWriter().write(objectMapper.writeValueAsString(exchange));

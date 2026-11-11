@@ -1,11 +1,13 @@
 package DTO;
 
+import Model.Currency;
 import Model.ExchangeRate;
 
 import java.math.BigDecimal;
 
 public record ExchangeResponseDto(
-        ExchangeRate exchangeRate,
+        Currency baseCurrency,
+        Currency targetCurrency,
         BigDecimal amount,
         BigDecimal convertedAmount
 ) {

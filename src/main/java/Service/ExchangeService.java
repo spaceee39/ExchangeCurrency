@@ -4,7 +4,6 @@ import DAO.ExchangeRatesDao;
 import DTO.ExchangeRequestDto;
 import DTO.ExchangeResponseDto;
 import Exceptions.ExchangeRateNotFoundException;
-import Model.Exchange;
 import Model.ExchangeRate;
 
 import java.math.BigDecimal;
@@ -20,14 +19,14 @@ public class ExchangeService {
         List<ExchangeRate> rates = exchangeRatesDao.findAll();
         Optional<ExchangeRate> exchangeRate = findRateForExchange(exchangeRequestDto.baseCurrencyCode(), exchangeRequestDto.targetCurrencyCode(), rates);
         if(exchangeRate.isPresent()){
-            return new ExchangeResponseDto(exchangeRate.get(), exchangeRequestDto.amount(), getConvertedAmount(exchangeRate.get(), exchangeRequestDto.amount()));
+            return new ExchangeResponseDto(exchangeRate.get().getBaseCurrencyId(), exchangeRate.get().getTargetCurrencyId(), exchangeRequestDto.amount(), getConvertedAmount(exchangeRate.get(), exchangeRequestDto.amount()));
         } else {
             Optional<ExchangeRate> exToUsd = findRateForExchange(exchangeRequestDto.baseCurrencyCode(), "USD", rates);
-            Optional<ExchangeRate> exFromUsd = findRateForExchange(exchangeRequestDto.targetCurrencyCode(), "USD", rates);
+            Optional<ExchangeRate> exFromUsd = findRateForExchange( "USD", exchangeRequestDto.targetCurrencyCode(), rates);
             if(exToUsd.isEmpty() | exFromUsd.isEmpty()) throw new ExchangeRateNotFoundException("Exchange rate not found");
-            BigDecimal rateThroughUsd = exFromUsd.get().getRate().multiply(exFromUsd.get().getRate());
+            BigDecimal rateThroughUsd = exToUsd.get().getRate().multiply(exFromUsd.get().getRate());
             ExchangeRate ex = new ExchangeRate(exToUsd.get().getBaseCurrencyId(), exFromUsd.get().getTargetCurrencyId(), rateThroughUsd);
-            return new ExchangeResponseDto(ex, exchangeRequestDto.amount(), getConvertedAmount(ex, exchangeRequestDto.amount()));
+            return new ExchangeResponseDto(ex.getBaseCurrencyId(), ex.getTargetCurrencyId(), exchangeRequestDto.amount(), getConvertedAmount(ex, exchangeRequestDto.amount()));
         }
     }
 

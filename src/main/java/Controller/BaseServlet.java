@@ -43,6 +43,9 @@ public abstract class BaseServlet extends HttpServlet {
         return response;
     }
 
+    //public
+
+
     public String getPathInfo(HttpServletRequest req){
         String[] path = req.getPathInfo().split("/");
         if (path.length < 3){
