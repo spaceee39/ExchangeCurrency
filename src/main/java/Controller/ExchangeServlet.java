@@ -24,13 +24,13 @@ public class ExchangeServlet extends BaseServlet{
             super.compareCodes(baseCurrencyCode, targetCurrencyCode);
             BigDecimal amount = getBigDecimal(req, "amount");
             ExchangeResponseDto exchange = exchangeService.makeExchange(new ExchangeRequestDto(baseCurrencyCode, targetCurrencyCode, amount));
-            resp.getWriter().write(objectMapper.writeValueAsString(exchange));
+            setHttpResponse(resp, 400, objectMapper.writeValueAsString(exchange));
         } catch (ValidationException e) {
-            resp.sendError(400, e.getMessage());
+            setHttpResponse(resp, 400, e.getMessage());
         } catch (ExchangeRateNotFoundException e){
-            resp.sendError(404, e.getMessage());
+            setHttpResponse(resp, 404, e.getMessage());
         } catch (RuntimeException e) {
-            resp.sendError(500, "Internal server error");
+            setHttpResponse(resp, 500, "Internal server error");
         }
     }
 

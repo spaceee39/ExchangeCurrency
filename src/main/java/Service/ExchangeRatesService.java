@@ -30,17 +30,22 @@ public class ExchangeRatesService {
         return new ExchangeRateResponseDto(exchangeRate.getId(), exchangeRate.getBaseCurrencyId(), exchangeRate.getTargetCurrencyId(), exchangeRate.getRate());
     }
 
-    public void createNewRate(ExchangeRateRequestDto exchangeRateRequestDto){
+    public ExchangeRateResponseDto createNewRate(ExchangeRateRequestDto exchangeRateRequestDto){
         Optional<Currency> baseCurrency = currenciesDao.findCurrencyByCode(exchangeRateRequestDto.BaseCurrencyCode());
         Optional<Currency> targetCurrency = currenciesDao.findCurrencyByCode(exchangeRateRequestDto.TargetCurrencyCode());
         if(baseCurrency.isEmpty() || targetCurrency.isEmpty()){
             throw new CurrencyNotFoundException("One (or both) currencies of a currency pair does not exist");
         }
         exchangeRatesDao.save(baseCurrency.get(), targetCurrency.get(), exchangeRateRequestDto.rate());
+
+        ExchangeRate exchangeRate = exchangeRatesDao.findByCodes(baseCurrency.get().getCode(), targetCurrency.get().getCode());
+        return new ExchangeRateResponseDto(exchangeRate.getId(), exchangeRate.getBaseCurrencyId(), exchangeRate.getTargetCurrencyId(), exchangeRate.getRate());
     }
 
-    public void patchRate(ExchangeRateRequestDto exchangeRateRequestDto){
+    public ExchangeRateResponseDto patchRate(ExchangeRateRequestDto exchangeRateRequestDto){
         exchangeRatesDao.updateRate(exchangeRateRequestDto.BaseCurrencyCode(), exchangeRateRequestDto.TargetCurrencyCode(), exchangeRateRequestDto.rate());
+        ExchangeRate exchangeRate = exchangeRatesDao.findByCodes(exchangeRateRequestDto.BaseCurrencyCode(), exchangeRateRequestDto.TargetCurrencyCode());
+        return new ExchangeRateResponseDto(exchangeRate.getId(), exchangeRate.getBaseCurrencyId(), exchangeRate.getTargetCurrencyId(), exchangeRate.getRate());
     }
 
     public ExchangeRatesService(ExchangeRatesDao exchangeRatesDao, CurrenciesDao currenciesDao) {

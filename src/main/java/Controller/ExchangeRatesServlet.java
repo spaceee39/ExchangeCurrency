@@ -23,9 +23,9 @@ public class ExchangeRatesServlet extends BaseServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try{
             List<ExchangeRateResponseDto> exchangeRateList = exchangeRatesService.getAllExchangeRates();
-            resp.getWriter().write(objectMapper.writeValueAsString(exchangeRateList));
+           setHttpResponse(resp, 200, objectMapper.writeValueAsString(exchangeRateList));
         } catch (RuntimeException e) {
-            resp.sendError(500, "Internal server error");
+            setHttpResponse(resp, 500, "message: An unexpected error occurred");
         }
     }
 
@@ -36,17 +36,14 @@ public class ExchangeRatesServlet extends BaseServlet {
             String targetCurrencyCode = getCurrencyCode(req, "targetCurrencyCode");
             BigDecimal rate = getBigDecimal(req, "rate");
             compareCodes(baseCurrencyCode, targetCurrencyCode);
-
-            exchangeRatesService.createNewRate(new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, rate));
-
+            ExchangeRateResponseDto exchangeRateResponseDto = exchangeRatesService.createNewRate(new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, rate));
+            setHttpResponse(resp, 201, objectMapper.writeValueAsString(exchangeRateResponseDto));
         }catch (ValidationException e){
-            resp.sendError(400, e.getMessage());
-        }catch (CurrencyNotFoundException e){
-            resp.sendError(404, e.getMessage());
-        } catch (CurrencyAlreadyExists e) {
-          resp.sendError(409, e.getMessage());
+            setHttpResponse(resp, 400, "message: " + e.getMessage());
+        }catch (CurrencyAlreadyExists e) {
+            setHttpResponse(resp, 409, "message: A currency pair with this code already exists.");
         } catch (RuntimeException e){
-            resp.sendError(500, "Internal server error");
+            setHttpResponse(resp, 500, "message: An unexpected error occurred");
         }
     }
 
@@ -58,13 +55,14 @@ public class ExchangeRatesServlet extends BaseServlet {
             String targetCurrencyCode = path.substring(3, 6).toLowerCase(Locale.ROOT);
             compareCodes(baseCurrencyCode, targetCurrencyCode);
             BigDecimal rate = getBigDecimal(req, "rate");
-            exchangeRatesService.patchRate(new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, rate));
+            ExchangeRateResponseDto exchangeRateResponseDto = exchangeRatesService.patchRate(new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, rate));
+            setHttpResponse(resp, 200, objectMapper.writeValueAsString(exchangeRateResponseDto));
         }catch (ValidationException e){
-            resp.sendError(400, e.getMessage());
+            setHttpResponse(resp, 400, "message: " + e.getMessage());
         }catch (ExchangeRateNotFoundException e){
-            resp.sendError(404, e.getMessage());
+            setHttpResponse(resp, 404, "message: " + e.getMessage());
         }catch(RuntimeException e){
-            resp.sendError(500, "Internal server error");
+            setHttpResponse(resp, 500, "Internal server error");
         }
     }
 

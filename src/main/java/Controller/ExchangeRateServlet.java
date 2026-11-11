@@ -17,21 +17,19 @@ public class ExchangeRateServlet extends BaseServlet{
         try{
             String path = getPathInfo(req);
             if(path == null || !path.matches("[A-Za-z]{6}") ){
-                resp.sendError(400, "Incorrect currency code");
+                resp.sendError(400, "message: Incorrect currency code");
             }
             String baseCurrencyCode = path.substring(0,3).toUpperCase();
             String targetCurrencyCode = path.substring(3).toUpperCase();
 
             ExchangeRateResponseDto exchangeRateResponseDto = exchangeRatesService.getRateByCodes(baseCurrencyCode, targetCurrencyCode);
 
-            resp.getWriter().write(objectMapper.writeValueAsString(exchangeRateResponseDto));
+            setHttpResponse(resp, 200, objectMapper.writeValueAsString(exchangeRateResponseDto));
 
         } catch (ExchangeRateNotFoundException e){
-            resp.sendError(404, "Exchange rate not found for the pair");
+            setHttpResponse(resp, 404, "message: Exchange rate not found for the pair");
         } catch (RuntimeException e){
-            resp.sendError(500, e.getMessage());
-
+            setHttpResponse(resp, 500, "message: An unexpected error occurred");
         }
-
     }
 }

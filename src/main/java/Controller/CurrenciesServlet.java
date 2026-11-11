@@ -24,7 +24,7 @@ public class CurrenciesServlet extends BaseServlet {
             String responseBody = objectMapper.writeValueAsString(currencyDtoList);
             setHttpResponse(resp, 200, responseBody);
         } catch (CurrencyNotFoundException e) {
-            resp.sendError(500, e.getMessage());
+            setHttpResponse(resp, 500, "message: "+ e.getMessage());
         }
     }
 
@@ -34,18 +34,19 @@ public class CurrenciesServlet extends BaseServlet {
         String code = req.getParameter("code");
         String sign = req.getParameter("sign");
         if (isBlank(code) || isBlank(fullName) || isBlank(sign)) {
-            resp.sendError(400, "Missing required field");
+            setHttpResponse(resp, 400, "message: Missing required field");
             return;
         }
         try {
             CurrencyRequestDto currencyRequestDto = new CurrencyRequestDto(fullName, code, sign);
-            currencyService.addNewCurrency(currencyRequestDto);
+             CurrencyResponseDto currencyResponse = currencyService.addNewCurrency(currencyRequestDto);
+            setHttpResponse(resp, 201, objectMapper.writeValueAsString(currencyResponse));
         } catch (IllegalArgumentException e) {
-            resp.sendError(400, e.getMessage());
+            setHttpResponse(resp, 400, "message: A required form field is missing");
         } catch (CurrencyAlreadyExists e) {
-            resp.sendError(409, e.getMessage());
-        } catch (CurrencySaveException e) {
-            resp.sendError(500, e.getMessage());
+            setHttpResponse(resp, 409, "message: A currency with this code already exists.");
+        } catch (RuntimeException e){
+            setHttpResponse(resp, 500, "message: An unexpected error occurred");
         }
     }
 

@@ -4,10 +4,12 @@ import DAO.CurrenciesDao;
 import DTO.CurrencyRequestDto;
 import DTO.CurrencyResponseDto;
 import Exceptions.CurrencyNotFoundException;
+import Exceptions.ExchangeRateNotFoundException;
 import Model.Currency;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class CurrencyService {
@@ -28,9 +30,13 @@ public class CurrencyService {
         return new CurrencyResponseDto(currency.getId(), currency.getFullName(), currency.getCode(), currency.getSign());
     }
 
-    public void addNewCurrency(CurrencyRequestDto currencyRequestDto){
+    public CurrencyResponseDto addNewCurrency(CurrencyRequestDto currencyRequestDto){
         Currency currency = new Currency(currencyRequestDto);
         currenciesDao.save(currency);
+        Optional<Currency> cur = currenciesDao.findCurrencyByCode(currency.getCode());
+        if(cur.isPresent()) {
+            return new CurrencyResponseDto(currency.getId(),currency.getFullName(), currency.getCode(), currency.getSign());
+        } else throw new CurrencyNotFoundException("Currency not found");
     }
 
     //constructor
