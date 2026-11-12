@@ -52,6 +52,6 @@ public class ExchangeService {
     }
 
     private BigDecimal getConvertedAmount(ExchangeRate exchangeRate, BigDecimal amount){
-        return amount.multiply(exchangeRate.getRate());
+        return amount.multiply(exchangeRate.getRate()).setScale(6, RoundingMode.HALF_UP);
     }
 }

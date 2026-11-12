@@ -24,7 +24,7 @@ public class ExchangeServlet extends BaseServlet{
             super.compareCodes(baseCurrencyCode, targetCurrencyCode);
             BigDecimal amount = getBigDecimal(req, "amount");
             ExchangeResponseDto exchange = exchangeService.makeExchange(new ExchangeRequestDto(baseCurrencyCode, targetCurrencyCode, amount));
-            setHttpResponse(resp, 400, objectMapper.writeValueAsString(exchange));
+            setHttpResponse(resp, 200, objectMapper.writeValueAsString(exchange));
         } catch (ValidationException e) {
             setHttpResponse(resp, 400, e.getMessage());
         } catch (ExchangeRateNotFoundException e){
