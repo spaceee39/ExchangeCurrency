@@ -40,31 +40,16 @@ public class ExchangeRatesServlet extends BaseServlet {
             setHttpResponse(resp, 201, objectMapper.writeValueAsString(exchangeRateResponseDto));
         }catch (ValidationException e){
             setHttpResponse(resp, 400, "message: " + e.getMessage());
-        }catch (CurrencyAlreadyExists e) {
+        }catch(CurrencyNotFoundException e){
+          setHttpResponse(resp, 404, "message: currency not found");
+        } catch (CurrencyAlreadyExists e) {
             setHttpResponse(resp, 409, "message: A currency pair with this code already exists.");
         } catch (RuntimeException e){
             setHttpResponse(resp, 500, "message: An unexpected error occurred");
         }
     }
 
-    @Override
-    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            String path = getPathInfo(req);
-            String baseCurrencyCode = path.substring(0, 3).toUpperCase(Locale.ROOT);
-            String targetCurrencyCode = path.substring(3, 6).toLowerCase(Locale.ROOT);
-            compareCodes(baseCurrencyCode, targetCurrencyCode);
-            BigDecimal rate = getBigDecimal(req, "rate");
-            ExchangeRateResponseDto exchangeRateResponseDto = exchangeRatesService.patchRate(new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, rate));
-            setHttpResponse(resp, 200, objectMapper.writeValueAsString(exchangeRateResponseDto));
-        }catch (ValidationException e){
-            setHttpResponse(resp, 400, "message: " + e.getMessage());
-        }catch (ExchangeRateNotFoundException e){
-            setHttpResponse(resp, 404, "message: " + e.getMessage());
-        }catch(RuntimeException e){
-            setHttpResponse(resp, 500, "Internal server error");
-        }
-    }
+
 
 
 

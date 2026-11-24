@@ -22,7 +22,7 @@ public class Currency {
     public Currency(CurrencyResponseDto currencyResponseDto) {
     id = currencyResponseDto.id();
     code = currencyResponseDto.code();
-    fullName = currencyResponseDto.fullName();
+    fullName = currencyResponseDto.name();
     sign = currencyResponseDto.sign();
     }
 

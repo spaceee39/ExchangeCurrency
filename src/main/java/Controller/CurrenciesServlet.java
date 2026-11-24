@@ -4,7 +4,6 @@ import DTO.CurrencyRequestDto;
 import DTO.CurrencyResponseDto;
 import Exceptions.CurrencyAlreadyExists;
 import Exceptions.CurrencyNotFoundException;
-import Exceptions.CurrencySaveException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,15 +29,15 @@ public class CurrenciesServlet extends BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String fullName = req.getParameter("fullname");
+        String name = req.getParameter("name");
         String code = req.getParameter("code");
         String sign = req.getParameter("sign");
-        if (isBlank(code) || isBlank(fullName) || isBlank(sign)) {
+        if (isBlank(code) || isBlank(name) || isBlank(sign) || code.length()>8) {
             setHttpResponse(resp, 400, "message: Missing required field");
             return;
         }
         try {
-            CurrencyRequestDto currencyRequestDto = new CurrencyRequestDto(fullName, code, sign);
+            CurrencyRequestDto currencyRequestDto = new CurrencyRequestDto(name, code, sign);
              CurrencyResponseDto currencyResponse = currencyService.addNewCurrency(currencyRequestDto);
             setHttpResponse(resp, 201, objectMapper.writeValueAsString(currencyResponse));
         } catch (IllegalArgumentException e) {

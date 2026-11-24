@@ -1,5 +1,6 @@
 package Controller;
 
+import Exceptions.CurrencyNotFoundException;
 import Exceptions.InvalidRequestException;
 import Exceptions.ValidationException;
 import Service.CurrencyService;
@@ -47,8 +48,8 @@ public abstract class BaseServlet extends HttpServlet {
     public String getPathInfo(HttpServletRequest req){
         String[] path = req.getPathInfo().split("/");
         if (path.length < 3){
-            if(path[1] == null) throw new NullPointerException("The code is missing from the address.");
-        return path[1];
+            if(path[1] == null) throw new NullPointerException("The path is missing from the address.");
+            return path[1];
         } else throw new InvalidRequestException("Invalid path name");
     }
 
@@ -64,8 +65,8 @@ public abstract class BaseServlet extends HttpServlet {
             }
             String clear = value.trim().replace(',', '.');
             BigDecimal rate = new BigDecimal(clear);
-            if (rate.compareTo(BigDecimal.ZERO) < 0) {
-                throw new ValidationException("Rate less than 0.");
+            if (rate.compareTo(BigDecimal.ZERO) < 0 || rate.equals(BigDecimal.ZERO)) {
+                throw new ValidationException("Rate less than 0 or equals 0.");
             }
             return rate;
         }catch (NumberFormatException e){
@@ -78,9 +79,8 @@ public abstract class BaseServlet extends HttpServlet {
         if (isBlank(value)) {
             throw new ValidationException("Parameter " + parameterName + " is required.");
         }
-        value = value.strip().toUpperCase(Locale.ROOT);
         if (!value.matches("[A-Z]{3}")) {
-            throw new ValidationException("Parameter " + parameterName + " must be a 3-letter currency code.");
+            throw new ValidationException("Parameter " + parameterName + " must be a 3-letter currency code or in upper case.");
         }
         return value;
     }
