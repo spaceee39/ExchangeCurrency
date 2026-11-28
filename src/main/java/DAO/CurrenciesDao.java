@@ -60,13 +60,13 @@ public class CurrenciesDao {
     }
 
     public void save(Currency currency){
-        if (currency.getCode() == null || currency.getFullName() == null || currency.getSign() == null) {
+        if (currency.getCode() == null || currency .getName() == null || currency.getSign() == null) {
             throw new IllegalArgumentException("Currency fields must not be null");
         }
         try(Connection connection = connectionSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(ADD_NEW_CURRENCY);) {
             preparedStatement.setString(1,currency.getCode());
-            preparedStatement.setString(2, currency.getFullName());
+            preparedStatement.setString(2, currency.getName());
             preparedStatement.setString(3, currency.getSign());
             preparedStatement.executeUpdate();
             } catch (SQLException e) {

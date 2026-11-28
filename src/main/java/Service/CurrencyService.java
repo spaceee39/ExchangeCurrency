@@ -20,14 +20,14 @@ public class CurrencyService {
         List<Currency> currencyList = currenciesDao.findAll();
         List<CurrencyResponseDto> currencyDtoList = new ArrayList<>();
         for(Currency currency : currencyList){
-            currencyDtoList.add(new CurrencyResponseDto(currency.getId(),currency.getFullName(), currency.getCode(), currency.getSign()));
+            currencyDtoList.add(new CurrencyResponseDto(currency.getId(),currency.getName(), currency.getCode(), currency.getSign()));
         }
         return currencyDtoList;
     }
 
     public CurrencyResponseDto getCurrencyByCode(String code) {
         Currency currency = currenciesDao.findCurrencyByCode(code).orElseThrow(() -> new CurrencyNotFoundException("Currency not found: " + code));
-        return new CurrencyResponseDto(currency.getId(), currency.getFullName(), currency.getCode(), currency.getSign());
+        return new CurrencyResponseDto(currency.getId(), currency.getName(), currency.getCode(), currency.getSign());
     }
 
     public CurrencyResponseDto addNewCurrency(CurrencyRequestDto currencyRequestDto){
@@ -35,7 +35,7 @@ public class CurrencyService {
         currenciesDao.save(currency);
         Optional<Currency> cur = currenciesDao.findCurrencyByCode(currency.getCode());
         if(cur.isPresent()) {
-            return new CurrencyResponseDto(cur.get().getId(), cur.get().getFullName(), cur.get().getCode(), cur.get().getSign());
+            return new CurrencyResponseDto(cur.get().getId(), cur.get().getName(), cur.get().getCode(), cur.get().getSign());
         } else throw new CurrencyNotFoundException("Currency not found");
     }
 
