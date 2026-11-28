@@ -11,7 +11,6 @@ public class DataHikariSourceFabric {
 
     //статик который возвращает наше хранилище данных (Connection), наш так называемый Пул
     public static HikariDataSource create(){
-
         Properties dbConfig = loadConfig();
 
         // создаем конфиг нашего пула соединений
@@ -20,7 +19,6 @@ public class DataHikariSourceFabric {
         hikariConfig.setUsername(dbConfig.getProperty("jdbc.username"));
         hikariConfig.setPassword(dbConfig.getProperty("jdbc.password"));
         hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
-
         return new HikariDataSource(hikariConfig);
         }
 

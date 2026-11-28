@@ -25,7 +25,7 @@ public class ExchangeRatesServlet extends BaseServlet {
             List<ExchangeRateResponseDto> exchangeRateList = exchangeRatesService.getAllExchangeRates();
            setHttpResponse(resp, 200, objectMapper.writeValueAsString(exchangeRateList));
         } catch (RuntimeException e) {
-            setHttpResponse(resp, 500, "message: An unexpected error occurred");
+            sendError(resp, 500, "An unexpected error occurred");
         }
     }
 
@@ -39,13 +39,13 @@ public class ExchangeRatesServlet extends BaseServlet {
             ExchangeRateResponseDto exchangeRateResponseDto = exchangeRatesService.createNewRate(new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, rate));
             setHttpResponse(resp, 201, objectMapper.writeValueAsString(exchangeRateResponseDto));
         }catch (ValidationException e){
-            setHttpResponse(resp, 400, "message: " + e.getMessage());
+            sendError(resp, 400, e.getMessage());
         }catch(CurrencyNotFoundException e){
-          setHttpResponse(resp, 404, "message: currency not found");
+            sendError(resp, 404, "currency not found");
         } catch (CurrencyAlreadyExists e) {
-            setHttpResponse(resp, 409, "message: A currency pair with this code already exists.");
+            sendError(resp, 409, "A currency pair with this code already exists.");
         } catch (RuntimeException e){
-            setHttpResponse(resp, 500, "message: An unexpected error occurred");
+            sendError(resp, 500, "An unexpected error occurred");
         }
     }
 

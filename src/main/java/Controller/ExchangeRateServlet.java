@@ -25,17 +25,17 @@ public class ExchangeRateServlet extends BaseServlet{
             String targetCurrencyCode = path.substring(3);
             compareCodes(baseCurrencyCode, targetCurrencyCode);
             if(path == null || !path.matches("[A-Z]{6}")){
-                setHttpResponse(resp, 400, "message: Incorrect currency code");
+                sendError(resp, 400, "Incorrect currency code");
                 return;
             }
             ExchangeRateResponseDto exchangeRateResponseDto = exchangeRatesService.getRateByCodes(baseCurrencyCode, targetCurrencyCode);
             setHttpResponse(resp, 200, objectMapper.writeValueAsString(exchangeRateResponseDto));
         } catch (ValidationException e) {
-            setHttpResponse(resp, 400, " message: "+e.getMessage());
+            sendError(resp, 400, e.getMessage());
         } catch (ExchangeRateNotFoundException e){
-            setHttpResponse(resp, 404, "message: Exchange rate not found for the pair");
+            sendError(resp, 404, "Exchange rate not found for the pair");
         } catch (RuntimeException e){
-            setHttpResponse(resp, 500, "message: An unexpected error occurred");
+            sendError(resp, 500, "An unexpected error occurred");
         }
     }
 
@@ -47,18 +47,18 @@ public class ExchangeRateServlet extends BaseServlet{
             String targetCurrencyCode = path.substring(3, 6);
             compareCodes(baseCurrencyCode, targetCurrencyCode);
             if(path == null || !path.matches("[A-Z]{6}")){
-                setHttpResponse(resp, 400, "message: Incorrect currency code");
+                sendError(resp, 400, "Incorrect currency code");
                 return;
             }
             BigDecimal rate = getBigDecimal(req, "rate");
             ExchangeRateResponseDto exchangeRateResponseDto = exchangeRatesService.patchRate(new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, rate));
             setHttpResponse(resp, 200, objectMapper.writeValueAsString(exchangeRateResponseDto));
         }catch (ValidationException e) {
-            setHttpResponse(resp, 400, "message: " + e.getMessage());
+            sendError(resp, 400, e.getMessage());
         }catch (ExchangeRateNotFoundException e){
-            setHttpResponse(resp, 404, "message: " + e.getMessage());
+            sendError(resp, 404, e.getMessage());
         }catch(RuntimeException e){
-            setHttpResponse(resp, 500, "Internal server error");
+            sendError(resp, 500, "Internal server error");
         }
     }
 }

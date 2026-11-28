@@ -26,11 +26,11 @@ public class ExchangeServlet extends BaseServlet{
             ExchangeResponseDto exchange = exchangeService.makeExchange(new ExchangeRequestDto(baseCurrencyCode, targetCurrencyCode, amount));
             setHttpResponse(resp, 200, objectMapper.writeValueAsString(exchange));
         } catch (ValidationException e) {
-            setHttpResponse(resp, 400, e.getMessage());
+            sendError(resp, 400, e.getMessage());
         } catch (ExchangeRateNotFoundException e){
-            setHttpResponse(resp, 404, e.getMessage());
+            sendError(resp, 404, e.getMessage());
         } catch (RuntimeException e) {
-            setHttpResponse(resp, 500, "Internal server error");
+            sendError(resp, 500, "Internal server error");
         }
     }
 

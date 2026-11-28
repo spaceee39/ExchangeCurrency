@@ -17,17 +17,18 @@ public class CurrencyServlet extends BaseServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String currencyCode = getPathInfo(req);
-            if(currencyCode.length()!=3 || !currencyCode.matches("[A-Z]")){
-                setHttpResponse(resp, 400, "message: invalid currency code");
+            if(!currencyCode.matches("[A-Z]{3}")){
+                sendError(resp, 400, "Invalid currency code.");
+                return;
             }
             CurrencyResponseDto currencyResponseDto = currencyService.getCurrencyByCode(currencyCode);
             setHttpResponse(resp, 200, objectMapper.writeValueAsString(currencyResponseDto));
         } catch (CurrencyNotFoundException e) {
-            setHttpResponse(resp, 404, "message: Currency is not found.");
+            sendError(resp, 404, "Currency is not found.");
         } catch (NullPointerException e){
-            setHttpResponse(resp, 400, "message: The currency code is missing from the address.");
+            sendError(resp, 400, "The currency code is missing from the address.");
         }  catch (RuntimeException e){
-            setHttpResponse(resp, 500, "message: An unexpected error occurred.");
+            sendError(resp, 500, "An unexpected error occurred.");
         }
     }
 }

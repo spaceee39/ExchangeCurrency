@@ -44,6 +44,12 @@ public abstract class BaseServlet extends HttpServlet {
         return response;
     }
 
+    public void sendError(HttpServletResponse response, int status, String responseBody) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"message\":"+responseBody+"}");
+    }
 
     public String getPathInfo(HttpServletRequest req){
         String[] path = req.getPathInfo().split("/");

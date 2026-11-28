@@ -35,7 +35,7 @@ public class CurrencyService {
         currenciesDao.save(currency);
         Optional<Currency> cur = currenciesDao.findCurrencyByCode(currency.getCode());
         if(cur.isPresent()) {
-            return new CurrencyResponseDto(currency.getId(),currency.getFullName(), currency.getCode(), currency.getSign());
+            return new CurrencyResponseDto(cur.get().getId(), cur.get().getFullName(), cur.get().getCode(), cur.get().getSign());
         } else throw new CurrencyNotFoundException("Currency not found");
     }
 

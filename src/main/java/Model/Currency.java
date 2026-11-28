@@ -8,27 +8,27 @@ import lombok.Getter;
 public class Currency {
     private Long id;
     private String code;
-    private String fullName;
+    private String name;
     private String sign;
 
 
     public Currency(Long id, String code, String fullName, String sign) {
         this.id = id;
         this.code = code;
-        this.fullName = fullName;
+        name = fullName;
         this.sign = sign;
     }
 
     public Currency(CurrencyResponseDto currencyResponseDto) {
     id = currencyResponseDto.id();
     code = currencyResponseDto.code();
-    fullName = currencyResponseDto.name();
+    name = currencyResponseDto.name();
     sign = currencyResponseDto.sign();
     }
 
     public Currency(CurrencyRequestDto currencyRequestDtoDto) {
         code = currencyRequestDtoDto.code();
-        fullName = currencyRequestDtoDto.fullName();
+        name = currencyRequestDtoDto.fullName();
         sign = currencyRequestDtoDto.sign();
     }
 
